@@ -30,8 +30,8 @@ namespace MindBody.Controllers
             // Run call with request and fill result  
             StaffService.GetStaffResult staffResult = client.GetStaff(staffRequest);
 
+            // List to populate the dropdown
             List<SelectListItem> listItems = new List<SelectListItem>();
-
             foreach (StaffService.Staff st in staffResult.StaffMembers)
             {
                 if (st.ID > 0)
@@ -44,6 +44,7 @@ namespace MindBody.Controllers
                     });
                 }
             }
+            // populate the dropdown
             ViewBag.staffList = new SelectList(listItems, "value", "text");
 
             return View();
@@ -59,7 +60,6 @@ namespace MindBody.Controllers
             string[] textSplit = text.Split(' ');
             string StaffCredentialsUserName = textSplit[0] + "." + textSplit[1];
             string StaffCredentialsPassword = textSplit[0][0].ToString().ToLower() + textSplit[1][0].ToString().ToLower() + value;
-
             // Create Client
             AppointmentService.AppointmentServiceSoapClient client = new AppointmentService.AppointmentServiceSoapClient();
             // Create request
@@ -76,12 +76,13 @@ namespace MindBody.Controllers
             DateTime datetime = new DateTime(2014, 1, 03);
             staffRequest.StartDate = datetime;
             staffRequest.EndDate = datetime;
+
             // Run call with request and fill result  
             AppointmentService.GetStaffAppointmentsResult appointmentResult = client.GetStaffAppointments(staffRequest);
 
+            //Convert to required json data
             if (appointmentResult.Appointments != null)
             {
-                int Id = 1;
                 var jsonData = new
                 {
                     rows = (
@@ -100,9 +101,6 @@ namespace MindBody.Controllers
             {
                 var jsonData = new
                 {
-                    total = 1, // we'll implement later 
-                    page = page,
-                    records = 3, // implement later 
                     rows = new[]{
                                   new {id = 1, cell = new[] {""}}
                                 }
@@ -110,6 +108,7 @@ namespace MindBody.Controllers
                 return Json(jsonData, JsonRequestBehavior.AllowGet);
             }
         }
+
         public ActionResult About()
         {
             ViewBag.Message = "Your application description page.";
